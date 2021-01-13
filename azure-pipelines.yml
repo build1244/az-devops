@@ -4,12 +4,6 @@
 # https://aka.ms/yaml
 
 
-parameters:
-  - name: image
-    displayName: build image name
-    type: string
-    default: $(dockerImage)
-
 trigger:
 - main
 
@@ -28,7 +22,6 @@ steps:
     FROM maven as builder
     WORKDIR /tmp/web
     COPY web/pom.xml .
-
     RUN mvn dependency:go-offline -B
     COPY web/src .
     RUN mvn clean install
@@ -39,9 +32,11 @@ steps:
     CMD ["java","-jar","./${artifactId}-${version}.${package}"]
     EOF
     cat Dockerfile
-#- task: Docker@2
-#  inputs:
-#    containerRegistry: 'docker-hub'
-#    repository: '$(dockerImage)'
-#    command: 'build'
-#    Dockerfile: '**/Dockerfile'
+  displayName: write Dockerfile
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'docker-hub'
+    repository: '$(dockerImage)'
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
