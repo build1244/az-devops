@@ -31,10 +31,10 @@ steps:
     COPY --from=builder /tmp/web/target /tmp/demo
     CMD ["java","-jar","./${artifactId}-${version}.${package}"]
     EOF
-    cat Dockerfile
-  displayName: write Dockerfile
+  displayName: Write Dockerfile
 
 - task: Docker@2
+  displayName: Build image
   inputs:
     containerRegistry: 'docker-hub'
     repository: '$(dockerImage)'
@@ -42,6 +42,7 @@ steps:
     Dockerfile: '**/Dockerfile'
 
 - task: Docker@2
+  displayName: Push image to Dockerhub
   inputs:
     containerRegistry: 'docker-hub'
     repository: '$(dockerImage)'
