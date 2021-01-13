@@ -40,3 +40,10 @@ steps:
     repository: '$(dockerImage)'
     command: 'build'
     Dockerfile: '**/Dockerfile'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'docker-hub'
+    repository: '$(dockerImage)'
+    command: 'push'
+
