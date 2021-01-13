@@ -36,7 +36,7 @@ steps:
     FROM openjdk:8-jdk-slim
     WORKDIR /tmp/demo
     COPY --from=builder /tmp/web/target /tmp/demo
-    CMD ["java","-jar","./${artifactID}-${version}.${package}"]
+    CMD ["java","-jar","./${artifactId}-${version}.${package}"]
     EOF
     cat Dockerfile
 #- task: Docker@2
