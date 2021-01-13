@@ -1,0 +1,42 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    artifactId=$(cat web/pom.xml | grep "^    <artifactId>.*</artifactId>$" | awk -F'[><]' '{print $3}')
+    version=$(cat web/pom.xml | grep "^    <version>.*</version>$" | awk -F'[><]' '{print $3}')
+    package=$(cat web/pom.xml | grep "^    <packaging>.*</packaging>$" | awk -F'[><]' '{print $3}')
+    cat << EOF > Dockerfile
+    FROM maven as builder
+    WORKDIR /tmp/web
+    COPY web/pom.xml .
+    RUN mvn dependency:go-offline -B
+    COPY web/src .
+    RUN mvn clean install
+
+    FROM openjdk:8-jdk-slim
+    WORKDIR /tmp/demo
+    COPY --from=builder /tmp/web/target /tmp/demo
+    CMD ["java","-jar","./${artifactId}-${version}.${package}"]
+    EOF
+    cat Dockerfile
+  displayName: write Dockerfile
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'docker-hub'
+    repository: '$(dockerImage)'
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
