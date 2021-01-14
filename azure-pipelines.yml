@@ -70,7 +70,7 @@ steps:
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **\output-az.xml'
   inputs:
-    testResultsFormat: 'VSTest'
+    testResultsFormat: 'JUnit'
     testResultsFiles: '**/*'
     searchFolder: '$(System.DefaultWorkingDirectory)/robot/reports'
     failTaskOnFailedTests: true
