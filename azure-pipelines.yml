@@ -66,14 +66,15 @@ steps:
 - script: |
     ls $(System.DefaultWorkingDirectory)/robot/reports
     ls $(System.DefaultWorkingDirectory)/robot
+
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **\output-az.xml'
   inputs:
+    testResultsFormat: 'VSTest'
     testResultsFiles: '**/*'
     searchFolder: '$(System.DefaultWorkingDirectory)/robot/reports'
     failTaskOnFailedTests: true
     testRunTitle: '$(Build.DefinitionName) $(Build.BuildId)'
-    publishRunAttachments: true
   condition: succeededOrFailed()
 
 - task: Docker@2
