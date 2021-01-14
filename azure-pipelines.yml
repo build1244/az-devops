@@ -6,7 +6,7 @@
 parameters:
   - name: artifactName
     type: string
-    default: spring-boot-0.0.1-SNAPSHOT
+    default: spring-boot-0.0.1-SNAPSHOT.jar
 
 trigger:
 - main
