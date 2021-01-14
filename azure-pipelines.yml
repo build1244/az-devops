@@ -6,6 +6,7 @@
 parameters:
   - name: artifactName
     type: string
+    default: spring-boot-0.0.1-SNAPSHOT
 
 trigger:
 - main
@@ -50,19 +51,23 @@ steps:
     arguments: '-d --rm --name=web -p 8080:8080 --network=$(Build.DefinitionName) $(dockerImage):39'
   displayName: Run Web container
 
+- script: |
+    ls $(System.DefaultWorkingDirectory)
+    ls $(System.DefaultWorkingDirectory)/robot
+
 - task: Docker@2
   inputs:
     containerRegistry: 'docker-hub'
     repository: supakarn/robot:no-firefox
     command: 'run'
-    arguments: '--network=$(Build.DefinitionName) --rm -e ROBOT_OPTIONS="-x outputx.xml" -v $(System.DefaultWorkingDirectory)/tests:/opt/robotframework/tests:Z -v $(System.DefaultWorkingDirectory)/tests/reports:/opt/robotframework/reports:Z -e BROWSER=chrome -e URL=http://web:8080 supakarn/robot:no-firefox'
+    arguments: '--network=$(Build.DefinitionName) --rm -e ROBOT_OPTIONS="-x outputx.xml" -v $(System.DefaultWorkingDirectory)/robot/tests:/opt/robotframework/tests:Z -v $(System.DefaultWorkingDirectory)/robot/tests/reports:/opt/robotframework/reports:Z -e BROWSER=chrome -e URL=http://web:8080 supakarn/robot:no-firefox'
   displayName: Test Image
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **\output-az.xml'
   inputs:
     testResultsFiles: '**\*'
-    searchFolder: '$(System.DefaultWorkingDirectory)/tests/reports'
+    searchFolder: '$(System.DefaultWorkingDirectory)/robot/tests/reports'
     failTaskOnFailedTests: true
     testRunTitle: '$(Build.DefinitionName) $(Build.BuildId)'
     publishRunAttachments: true
