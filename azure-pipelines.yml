@@ -44,43 +44,6 @@ steps:
     Dockerfile: '**/Dockerfile'
 
 - task: Docker@2
-  inputs:
-    containerRegistry: 'docker-hub'
-    repository: '$(dokerImage)'
-    command: 'run'
-    arguments: '-d --rm --name=web -p 8080:8080 --network=$(Build.DefinitionName) $(dockerImage):$(Build.BuildId)'
-  displayName: Run Web container
-
-- script: |
-    ls $(System.DefaultWorkingDirectory)
-    ls $(System.DefaultWorkingDirectory)/robot
-
-- script: |
-    while ! (curl -f http://localhost:8080) do sleep 2; done
-  displayName: Wait for Web
-- task: Docker@2
-  inputs:
-    containerRegistry: 'docker-hub'
-    repository: supakarn/robot:root
-    command: 'run'
-    arguments: '--network=$(Build.DefinitionName) --rm -e ROBOT_OPTIONS="-x outputx.xml" -v $(System.DefaultWorkingDirectory)/robot/tests:/opt/robotframework/tests:Z -v $(System.DefaultWorkingDirectory)/robot/reports:/opt/robotframework/reports:Z -e BROWSER=chrome -e URL=http://web:8080 supakarn/robot:root'
-  displayName: Test Image
-
-- script: |
-    ls $(System.DefaultWorkingDirectory)/robot/reports
-    ls $(System.DefaultWorkingDirectory)/robot
-
-- task: PublishTestResults@2
-  displayName: 'Publish Test Results **\output-az.xml'
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/*'
-    searchFolder: '$(System.DefaultWorkingDirectory)/robot/reports'
-    failTaskOnFailedTests: true
-    testRunTitle: '$(Build.DefinitionName) $(Build.BuildId)'
-  condition: succeededOrFailed()
-
-- task: Docker@2
   displayName: Push image to Dockerhub
   inputs:
     containerRegistry: 'docker-hub'
