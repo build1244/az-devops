@@ -55,7 +55,7 @@ steps:
     containerRegistry: 'docker-hub'
     repository: supakarn/robot:no-firefox
     command: 'run'
-    arguments: '--network=$(Build.DefinitionName) --rm -e ROBOT_OPTIONS="-x outputx.xml" -v $(pwd)/tests:/opt/robotframework/tests:Z -v $(pwd)/tests/reports:/opt/robotframework/reports:Z -e BROWSER=chrome -e URL=http://web:8080 supakarn/robot:no-firefox'
+    arguments: '--network=$(Build.DefinitionName) --rm -e ROBOT_OPTIONS="-x outputx.xml" -v $(System.DefaultWorkingDirectory)/tests:/opt/robotframework/tests:Z -v $(System.DefaultWorkingDirectory)/tests/reports:/opt/robotframework/reports:Z -e BROWSER=chrome -e URL=http://web:8080 supakarn/robot:no-firefox'
   displayName: Test Image
 
 - task: PublishTestResults@2
