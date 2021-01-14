@@ -23,7 +23,7 @@ steps:
     WORKDIR /tmp/web
     COPY web/pom.xml .
     RUN mvn dependency:go-offline -B
-    COPY web/src .
+    COPY web/src ./src
     RUN mvn clean install
 
     FROM openjdk:8-jdk-slim
