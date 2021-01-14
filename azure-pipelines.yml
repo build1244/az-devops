@@ -3,6 +3,10 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+parameters:
+  - name: artifactName
+    type: string
+    default: spring-boot-0.0.1-SNAPSHOT
 
 trigger:
 - main
@@ -15,31 +19,60 @@ steps:
   displayName: 'Run a one-line script'
 
 - script: |
-    artifactId=$(cat web/pom.xml | grep "^    <artifactId>.*</artifactId>$" | awk -F'[><]' '{print $3}')
-    version=$(cat web/pom.xml | grep "^    <version>.*</version>$" | awk -F'[><]' '{print $3}')
-    package=$(cat web/pom.xml | grep "^    <packaging>.*</packaging>$" | awk -F'[><]' '{print $3}')
     cat << EOF > Dockerfile
     FROM maven as builder
     WORKDIR /tmp/web
     COPY web/pom.xml .
     RUN mvn dependency:go-offline -B
-    COPY web/src .
+    COPY web/src ./src
     RUN mvn clean install
 
     FROM openjdk:8-jdk-slim
     WORKDIR /tmp/demo
     COPY --from=builder /tmp/web/target /tmp/demo
-    CMD ["java","-jar","./${artifactId}-${version}.${package}"]
+    CMD ["java","-jar","./${{parameters.artifactName}}"]
     EOF
+    docker network create $(Build.DefinitionName)
+    docker volume create TestResult_$(Build.DefinitionName)
   displayName: Write Dockerfile
+ 
+# - task: Docker@2
+#   displayName: Build image
+#   inputs:
+#     containerRegistry: 'docker-hub'
+#     repository: '$(dockerImage)'
+#     command: 'build'
+#     Dockerfile: '**/Dockerfile'
 
 - task: Docker@2
-  displayName: Build image
   inputs:
     containerRegistry: 'docker-hub'
-    repository: '$(dockerImage)'
-    command: 'build'
-    Dockerfile: '**/Dockerfile'
+    repository: '$(dokerImage)'
+    command: 'run'
+    arguments: '-d --rm --name=web -p 8080:8080 --network=$(Build.DefinitionName) $(dockerImage):39'
+  displayName: Run Web container
+
+- script: |
+    ls $(System.DefaultWorkingDirectory)
+    ls $(System.DefaultWorkingDirectory)/robot
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'docker-hub'
+    repository: supakarn/robot:no-firefox
+    command: 'run'
+    arguments: '--network=$(Build.DefinitionName) --rm -e ROBOT_OPTIONS="-x outputx.xml" -v $(System.DefaultWorkingDirectory)/robot/tests:/opt/robotframework/tests:Z -v TestResult_$(Build.DefinitionName):/opt/robotframework/reports:Z -e BROWSER=chrome -e URL=http://web:8080 supakarn/robot:no-firefox'
+  displayName: Test Image
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results **\output-az.xml'
+  inputs:
+    testResultsFiles: '**\*'
+    searchFolder: '/var/lib/docker/volumes/TestResult_$(Build.DefinitionName)/_data'
+    failTaskOnFailedTests: true
+    testRunTitle: '$(Build.DefinitionName) $(Build.BuildId)'
+    publishRunAttachments: true
+  condition: succeededOrFailed()
 
 - task: Docker@2
   displayName: Push image to Dockerhub
