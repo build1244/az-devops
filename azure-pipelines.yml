@@ -33,22 +33,22 @@ steps:
     EOF
     docker netwotk create ${{Build.DefinitionName}}
   displayName: Write Dockerfile
+ 
+# - task: Docker@2
+#   displayName: Build image
+#   inputs:
+#     containerRegistry: 'docker-hub'
+#     repository: '$(dockerImage)'
+#     command: 'build'
+#     Dockerfile: '**/Dockerfile'
 
 - task: Docker@2
   inputs:
     containerRegistry: 'docker-hub'
     repository: '$(dokerImage)'
     command: 'run'
-    arguments: '-d --rm --name=web -p 8080:8080 --network=$(Build.DefinitionName) $(dockerImage):$(Build.BuildId)'
+    arguments: '-d --rm --name=web -p 8080:8080 --network=$(Build.DefinitionName) $(dockerImage):39'
   displayName: Run Web container
- 
-- task: Docker@2
-  displayName: Build image
-  inputs:
-    containerRegistry: 'docker-hub'
-    repository: '$(dockerImage)'
-    command: 'build'
-    Dockerfile: '**/Dockerfile'
 
 - task: Docker@2
   inputs:
