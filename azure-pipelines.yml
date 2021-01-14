@@ -29,7 +29,7 @@ steps:
     FROM openjdk:8-jdk-slim
     WORKDIR /tmp/demo
     COPY --from=builder /tmp/web/target /tmp/demo
-    CMD ["java","-jar","./${parameters.artifactName}"]
+    CMD ["java","-jar","./${{parameters.artifactName}}"]
     EOF
   displayName: Write Dockerfile
 
