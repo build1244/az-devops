@@ -55,6 +55,9 @@ steps:
     ls $(System.DefaultWorkingDirectory)
     ls $(System.DefaultWorkingDirectory)/robot
 
+- script: |
+    while ! (curl -f http://localhost:8080) do sleep 2; done
+  displayName: Wait for Web
 - task: Docker@2
   inputs:
     containerRegistry: 'docker-hub'
