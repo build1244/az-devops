@@ -33,7 +33,6 @@ steps:
     CMD ["java","-jar","./${{parameters.artifactName}}"]
     EOF
     docker network create $(Build.DefinitionName)
-    docker volume create TestResult_$(Build.DefinitionName)
   displayName: Write Dockerfile
  
 # - task: Docker@2
@@ -59,16 +58,16 @@ steps:
 - task: Docker@2
   inputs:
     containerRegistry: 'docker-hub'
-    repository: supakarn/robot:no-firefox
+    repository: supakarn/robot:root
     command: 'run'
-    arguments: '--network=$(Build.DefinitionName) --rm -e ROBOT_OPTIONS="-x outputx.xml" -v $(System.DefaultWorkingDirectory)/robot/tests:/opt/robotframework/tests:Z -v TestResult_$(Build.DefinitionName):/opt/robotframework/reports:Z -e BROWSER=chrome -e URL=http://web:8080 supakarn/robot:no-firefox'
+    arguments: '--network=$(Build.DefinitionName) --rm -e ROBOT_OPTIONS="-x outputx.xml" -v $(System.DefaultWorkingDirectory)/robot/tests:/opt/robotframework/tests:Z -v $(System.DefaultWorkingDirectory)/robot/reports:/opt/robotframework/reports:Z -e BROWSER=chrome -e URL=http://web:8080 supakarn/robot:root'
   displayName: Test Image
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **\output-az.xml'
   inputs:
     testResultsFiles: '**\*'
-    searchFolder: '/var/lib/docker/volumes/TestResult_$(Build.DefinitionName)/_data'
+    searchFolder: '$(System.DefaultWorkingDirectory)/robot/reports'
     failTaskOnFailedTests: true
     testRunTitle: '$(Build.DefinitionName) $(Build.BuildId)'
     publishRunAttachments: true
