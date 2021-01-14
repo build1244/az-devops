@@ -31,7 +31,7 @@ steps:
     COPY --from=builder /tmp/web/target /tmp/demo
     CMD ["java","-jar","./${{parameters.artifactName}}"]
     EOF
-    docker netwotk create $(Build.DefinitionName)
+    docker network create $(Build.DefinitionName)
   displayName: Write Dockerfile
  
 # - task: Docker@2
