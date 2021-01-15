@@ -28,7 +28,7 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script echo ${{parameters.imageRegistry}}
+# - script echo ${{parameters.imageRegistry}}
 # - script: echo $(password)
 
 - script: |
