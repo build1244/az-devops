@@ -10,8 +10,8 @@ parameters:
   - name: test
     default: "1"
     values:
-      - "1"
-      - "2"
+      - "Docker Hub"
+      - "Azure Container Registry"
 
 trigger:
 - main
