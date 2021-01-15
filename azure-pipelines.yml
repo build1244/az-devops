@@ -58,7 +58,7 @@ steps:
 
 
 - task: Docker@2
-  displayName: Push image to Dockerhub
+  displayName: Push image
   inputs:
     containerRegistry: '${{parameters.imageRegistry}}'
     repository: '${{parameters.imageName}}'
