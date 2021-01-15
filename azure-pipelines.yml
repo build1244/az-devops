@@ -23,7 +23,7 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script: echo $(password)
+# - script: echo $(password)
 
 - script: |
     cat << EOF > Dockerfile
