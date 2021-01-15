@@ -8,11 +8,15 @@ parameters:
     type: string
     default: spring-boot-0.0.1-SNAPSHOT.jar
 
-  - name: Image Registry
-    default: "Docker Hub"
+  - name: imageRegistry
+    default: "docker-hub"
     values:
-      - "Docker Hub"
-      - "Azure Container Registry"
+      - "docker-hub"
+      - "devsecops-ACR"
+  
+  - name: imageName
+    type: string
+    default: $(dockerImage)
 
 trigger:
 - main
@@ -24,6 +28,7 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
+- script echo ${{parameters.imageRegistry}}
 # - script: echo $(password)
 
 - script: |
@@ -41,7 +46,7 @@ steps:
     CMD ["java","-jar","./${{parameters.artifactName}}"]
     EOF
   displayName: Write Dockerfile
- 
+
 - task: Docker@2
   displayName: Build image
   inputs:
@@ -50,10 +55,11 @@ steps:
     command: 'build'
     Dockerfile: '**/Dockerfile'
 
+  displayName: echo image Registry
+
 - task: Docker@2
   displayName: Push image to Dockerhub
   inputs:
-    containerRegistry: 'docker-hub'
-    repository: '$(dockerImage)'
+    containerRegistry: ${{parameters.imageRegistry}}
+    repository: '${{parameters.imageName}}'
     command: 'push'
-
