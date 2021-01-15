@@ -7,8 +7,9 @@ parameters:
   - name: artifactName
     type: string
     default: spring-boot-0.0.1-SNAPSHOT.jar
-  - name: test
-    default: "1"
+
+  - name: Image Registry
+    default: "Docker Hub"
     values:
       - "Docker Hub"
       - "Azure Container Registry"
