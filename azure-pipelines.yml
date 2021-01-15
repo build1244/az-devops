@@ -55,8 +55,6 @@ steps:
     command: 'build'
     Dockerfile: '**/Dockerfile'
 
-  displayName: echo image Registry
-
 - task: Docker@2
   displayName: Push image to Dockerhub
   inputs:
