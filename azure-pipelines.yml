@@ -8,7 +8,6 @@ parameters:
     type: string
     default: spring-boot-0.0.1-SNAPSHOT.jar
   - name: test
-    type: string
     default: "1"
     values:
       - "1"
