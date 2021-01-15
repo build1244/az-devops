@@ -23,34 +23,36 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script: |
-    cat << EOF > Dockerfile
-    FROM maven as builder
-    WORKDIR /tmp/web
-    COPY web/pom.xml .
-    RUN mvn dependency:go-offline -B
-    COPY web/src ./src
-    RUN mvn clean install
+- script: echo $(password)
 
-    FROM openjdk:8-jdk-slim
-    WORKDIR /tmp/demo
-    COPY --from=builder /tmp/web/target /tmp/demo
-    CMD ["java","-jar","./${{parameters.artifactName}}"]
-    EOF
-  displayName: Write Dockerfile
+# - script: |
+#     cat << EOF > Dockerfile
+#     FROM maven as builder
+#     WORKDIR /tmp/web
+#     COPY web/pom.xml .
+#     RUN mvn dependency:go-offline -B
+#     COPY web/src ./src
+#     RUN mvn clean install
+
+#     FROM openjdk:8-jdk-slim
+#     WORKDIR /tmp/demo
+#     COPY --from=builder /tmp/web/target /tmp/demo
+#     CMD ["java","-jar","./${{parameters.artifactName}}"]
+#     EOF
+#   displayName: Write Dockerfile
  
-- task: Docker@2
-  displayName: Build image
-  inputs:
-    containerRegistry: 'docker-hub'
-    repository: '$(dockerImage)'
-    command: 'build'
-    Dockerfile: '**/Dockerfile'
+# - task: Docker@2
+#   displayName: Build image
+#   inputs:
+#     containerRegistry: 'docker-hub'
+#     repository: '$(dockerImage)'
+#     command: 'build'
+#     Dockerfile: '**/Dockerfile'
 
-- task: Docker@2
-  displayName: Push image to Dockerhub
-  inputs:
-    containerRegistry: 'docker-hub'
-    repository: '$(dockerImage)'
-    command: 'push'
+# - task: Docker@2
+#   displayName: Push image to Dockerhub
+#   inputs:
+#     containerRegistry: 'docker-hub'
+#     repository: '$(dockerImage)'
+#     command: 'push'
 
