@@ -50,14 +50,14 @@ steps:
 - task: Docker@2
   displayName: Build image
   inputs:
-    containerRegistry: 'docker-hub'
-    repository: '$(dockerImage)'
+    containerRegistry: '${{parameters.imageRegistry}}'
+    repository: '${{parameters.imageName}}'
     command: 'build'
     Dockerfile: '**/Dockerfile'
 
 - task: Docker@2
   displayName: Push image to Dockerhub
   inputs:
-    containerRegistry: ${{parameters.imageRegistry}}
+    containerRegistry: '${{parameters.imageRegistry}}'
     repository: '${{parameters.imageName}}'
     command: 'push'
