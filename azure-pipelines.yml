@@ -31,6 +31,11 @@ steps:
 # - script echo ${{parameters.imageRegistry}}
 # - script: echo $(password)
 
+- task: WhiteSource@20
+  inputs:
+    cwd: '$(System.DefaultWorkingDirectory)'
+    projectName: '$(Build.DefinitionName)_$(Build.BuildId)'
+
 - script: |
     cat << EOF > Dockerfile
     FROM alpine
