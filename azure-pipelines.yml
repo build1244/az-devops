@@ -33,7 +33,7 @@ steps:
 
 - task: WhiteSource@20
   inputs:
-    cwd: '$(System.DefaultWorkingDirectory)/web'
+    cwd: '$(System.DefaultWorkingDirectory)'
     projectName: '$(Build.DefinitionName)_$(Build.BuildId)'
 
 # - script: |
