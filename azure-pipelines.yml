@@ -36,35 +36,35 @@ steps:
     cwd: '$(System.DefaultWorkingDirectory)'
     projectName: '$(Build.DefinitionName)_$(Build.BuildId)'
 
-- script: |
-    cat << EOF > Dockerfile
-    FROM alpine
-    # FROM maven as builder
-    # WORKDIR /tmp/web
-    # COPY web/pom.xml .
-    # RUN mvn dependency:go-offline -B
-    # COPY web/src ./src
-    # RUN mvn clean install
+# - script: |
+#     cat << EOF > Dockerfile
+#     FROM alpine
+#     # FROM maven as builder
+#     # WORKDIR /tmp/web
+#     # COPY web/pom.xml .
+#     # RUN mvn dependency:go-offline -B
+#     # COPY web/src ./src
+#     # RUN mvn clean install
 
-    # FROM openjdk:8-jdk-slim
-    # WORKDIR /tmp/demo
-    # COPY --from=builder /tmp/web/target /tmp/demo
-    # CMD ["java","-jar","./${{parameters.artifactName}}"]
-    # EOF
-  displayName: Write Dockerfile
+#     # FROM openjdk:8-jdk-slim
+#     # WORKDIR /tmp/demo
+#     # COPY --from=builder /tmp/web/target /tmp/demo
+#     # CMD ["java","-jar","./${{parameters.artifactName}}"]
+#     # EOF
+#   displayName: Write Dockerfile
 
-- task: Docker@2
-  displayName: Build image
-  inputs:
-    containerRegistry: '${{parameters.imageRegistry}}'
-    repository: '${{parameters.imageName}}'
-    command: 'build'
-    Dockerfile: '**/Dockerfile'
+# - task: Docker@2
+#   displayName: Build image
+#   inputs:
+#     containerRegistry: '${{parameters.imageRegistry}}'
+#     repository: '${{parameters.imageName}}'
+#     command: 'build'
+#     Dockerfile: '**/Dockerfile'
 
 
-- task: Docker@2
-  displayName: Push image
-  inputs:
-    containerRegistry: '${{parameters.imageRegistry}}'
-    repository: '${{parameters.imageName}}'
-    command: 'push'
+# - task: Docker@2
+#   displayName: Push image
+#   inputs:
+#     containerRegistry: '${{parameters.imageRegistry}}'
+#     repository: '${{parameters.imageName}}'
+#     command: 'push'
