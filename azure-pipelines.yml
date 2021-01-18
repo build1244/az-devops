@@ -33,7 +33,7 @@ steps:
 
 - task: WhiteSource@20
   inputs:
-    cwd: '$(System.DefaultWorkingDirectory)'
+    cwd: '$(System.DefaultWorkingDirectory)/python'
     projectName: '$(Build.DefinitionName)_$(Build.BuildId)'
 
 # - script: |
