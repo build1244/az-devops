@@ -9,14 +9,14 @@ parameters:
     default: spring-boot-0.0.1-SNAPSHOT.jar
 
   - name: imageRegistry
-    default: "docker-hub"
+    default: "devsecops-ACR"
     values:
       - "docker-hub"
       - "devsecops-ACR"
   
   - name: imageName
     type: string
-    default: $(dockerImage)
+    default: az-devops-test
 
 trigger:
 - main
