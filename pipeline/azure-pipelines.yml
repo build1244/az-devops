@@ -57,13 +57,8 @@ steps:
   inputs:
     containerRegistry: '${{parameters.imageRegistry}}'
     repository: '${{parameters.imageName}}'
-    command: 'build'
+    command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
-
-
-- task: Docker@2
-  displayName: Push image
-  inputs:
-    containerRegistry: '${{parameters.imageRegistry}}'
-    repository: '${{parameters.imageName}}'
-    command: 'push'
+    tags: |
+      latest
+      $(Build.BuildId)
