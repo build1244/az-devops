@@ -65,7 +65,7 @@ steps:
 
 - template: ../template/writeDockerfile.yml
   parameters:
-    imageName: ${{parameters.artifactName}}
+    artifactName: ${{parameters.artifactName}}
 
 - task: Docker@2
   displayName: Build image
