@@ -1,0 +1,20 @@
+parameters:
+  - name: imageName
+    type: string
+
+steps:
+  - script: |
+      cat << EOF > Dockerfile
+      FROM maven as builder
+      WORKDIR /tmp/web
+      COPY web/pom.xml .
+      RUN mvn dependency:go-offline -B
+      COPY web/src ./src
+      RUN mvn clean install
+
+      FROM openjdk:8-jdk-slim
+      WORKDIR /tmp/demo
+      COPY --from=builder /tmp/web/target /tmp/demo
+      CMD ["java","-jar","./${{parameters.artifactName}}"]
+      EOF
+    displayName: Write Dockerfile
