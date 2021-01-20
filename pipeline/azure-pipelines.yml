@@ -63,7 +63,7 @@ steps:
 #     EOF
 #   displayName: Write Dockerfile
 
-- template: template/writeDockerfile.yml
+- template: ../template/writeDockerfile.yml
   parameters:
     imageName: ${{parameters.imageName}}
 
