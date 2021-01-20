@@ -24,9 +24,6 @@ parameters:
     displayName: Scan with WhiteSource Bolt
     type: boolean
     default: true
-    values:
-      - 1
-      - 2
 
 trigger:
 - main
