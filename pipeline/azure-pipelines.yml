@@ -9,14 +9,24 @@ parameters:
     default: spring-boot-0.0.1-SNAPSHOT.jar
 
   - name: imageRegistry
+    displayName: Input Image Registry
     default: "devsecops-ACR"
     values:
       - "docker-hub"
       - "devsecops-ACR"
   
   - name: imageName
+    displayName: Input Image Name
     type: string
     default: az-devops-test
+  
+  - name: scan
+    displayName: Scan with WhiteSource Bolt
+    type: boolean
+    default: true
+    values:
+      - 1
+      - 2
 
 trigger:
 - main
@@ -31,26 +41,31 @@ steps:
 # - script echo ${{parameters.imageRegistry}}
 - script: ls
 
-- task: WhiteSource@20
-  inputs:
-    cwd: '$(System.DefaultWorkingDirectory)'
-    projectName: '$(Build.DefinitionName)_$(Build.BuildId)'
+- ${{ if eq(parameters.scan, true) }}:
+  - task: WhiteSource@20
+    inputs:
+      cwd: '$(System.DefaultWorkingDirectory)'
+      projectName: '$(Build.DefinitionName)_$(Build.BuildId)'
 
-- script: |
-    cat << EOF > Dockerfile
-    FROM maven as builder
-    WORKDIR /tmp/web
-    COPY web/pom.xml .
-    RUN mvn dependency:go-offline -B
-    COPY web/src ./src
-    RUN mvn clean install
+# - script: |
+#     cat << EOF > Dockerfile
+#     FROM maven as builder
+#     WORKDIR /tmp/web
+#     COPY web/pom.xml .
+#     RUN mvn dependency:go-offline -B
+#     COPY web/src ./src
+#     RUN mvn clean install
 
-    FROM openjdk:8-jdk-slim
-    WORKDIR /tmp/demo
-    COPY --from=builder /tmp/web/target /tmp/demo
-    CMD ["java","-jar","./${{parameters.artifactName}}"]
-    EOF
-  displayName: Write Dockerfile
+#     FROM openjdk:8-jdk-slim
+#     WORKDIR /tmp/demo
+#     COPY --from=builder /tmp/web/target /tmp/demo
+#     CMD ["java","-jar","./${{parameters.artifactName}}"]
+#     EOF
+#   displayName: Write Dockerfile
+
+- template: template/writeDockerfile.yml
+  parameters:
+    imageName: ${{parameters.imageName}}
 
 - task: Docker@2
   displayName: Build image
