@@ -64,13 +64,13 @@ steps:
   parameters:
     artifactName: ${{parameters.artifactName}}
 
-# - task: Docker@2
-#   displayName: Build image
-#   inputs:
-#     containerRegistry: '${{parameters.imageRegistry}}'
-#     repository: '${{parameters.imageName}}'
-#     command: 'buildAndPush'
-#     Dockerfile: '**/Dockerfile'
-#     tags: |
-#       latest
-#       $(Build.BuildId)
+- task: Docker@2
+  displayName: Build image
+  inputs:
+    containerRegistry: '${{parameters.imageRegistry}}'
+    repository: '${{parameters.imageName}}'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      latest
+      $(Build.BuildId)
