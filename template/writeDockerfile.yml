@@ -1,5 +1,5 @@
 parameters:
-  - name: imageName
+  - name: artifactName
     type: string
 
 steps:
