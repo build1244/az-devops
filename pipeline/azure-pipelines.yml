@@ -36,7 +36,7 @@ steps:
   displayName: 'Run a one-line script'
 
 # - script echo ${{parameters.imageRegistry}}
-- script: ls
+- script: exit 1
 
 - ${{ if eq(parameters.scan, true) }}:
   - task: WhiteSource@20
@@ -60,9 +60,9 @@ steps:
 #     EOF
 #   displayName: Write Dockerfile
 
-- template: ../template/writeDockerfile.yml
-  parameters:
-    artifactName: ${{parameters.artifactName}}
+# - template: ../template/writeDockerfile.yml
+#   parameters:
+#     artifactName: ${{parameters.artifactName}}
 
 - task: Docker@2
   displayName: Build image
